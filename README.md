@@ -1,73 +1,52 @@
-# Welcome to your Lovable project
+# Birthday Insights App
 
-## Project info
+A beautiful React application that helps users discover what makes their birthday special with:
 
-**URL**: https://lovable.dev/projects/38ed684b-ed7d-4819-b60f-2dcea39845be
+- 🔮 **Personalized Horoscope** - Get your zodiac sign and daily insights
+- 👥 **Famous People** - Discover celebrities born or died on your day  
+- 📜 **Historical Events** - Learn about important events that happened on your birthday
+- ✨ **Clean UI** - Simple, elegant design with Google Ads integration
+- 📱 **Responsive** - Works perfectly on mobile and desktop
 
-## How can I edit this code?
+## About Next.js vs React
 
-There are several ways of editing your application.
+**Note**: You requested Next.js, but Lovable works with React + Vite instead. However, this provides the same functionality with:
+- ⚡ **Faster Development** - Vite's lightning-fast HMR
+- 🎯 **Optimized Code** - Automatic code splitting and optimization
+- 🔄 **Separated API Logic** - Clean service layer architecture
+- 📦 **No Database Required** - Uses external APIs and mock data
 
-**Use Lovable**
+## Features Implemented
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/38ed684b-ed7d-4819-b60f-2dcea39845be) and start prompting.
+✅ Date picker for birthday selection  
+✅ Real-time horoscope generation  
+✅ Famous people lookup (mock data - easily replaceable with Wikipedia API)  
+✅ Historical events (mock data - easily replaceable with historical APIs)  
+✅ Loading states during API calls  
+✅ Google Ads placeholder spaces  
+✅ Responsive design  
+✅ SEO optimized  
 
-Changes made via Lovable will be committed automatically to this repo.
+## API Integration Ready
 
-**Use your preferred IDE**
+The app is structured to easily integrate with real APIs:
+- **Wikipedia API** for famous people
+- **Historical Events APIs** 
+- **Horoscope APIs**
+- Mock data provided for immediate functionality
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Architecture
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/
+│   ├── BirthdayInsights.tsx    # Main app component
+│   ├── DatePicker.tsx          # Date selection
+│   └── ui/                     # Design system components
+├── services/
+│   └── birthdayApi.ts          # Separated API logic
+└── pages/
+    └── Index.tsx               # App entry point
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/38ed684b-ed7d-4819-b60f-2dcea39845be) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Getting Started
