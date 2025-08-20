@@ -57,22 +57,14 @@ export function DatePicker({ selected, onSelect, placeholder = "Pick a date", cl
 
   return (
     <div className="space-y-2">
-      <Input
-        type="text"
-        value={inputValue}
-        onChange={(e) => handleInputChange(e.target.value)}
-        onKeyDown={handleInputKeyDown}
-        placeholder="MM/DD/YYYY or use calendar below"
-        className={cn("w-[280px]", className)}
-      />
-      
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             className={cn(
-              "w-[280px] justify-start text-left font-normal",
-              !selected && "text-muted-foreground",
+              "w-[280px] justify-start text-left font-normal transition-all duration-[2s]",
+              !selected && "text-muted-foreground shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] animate-pulse",
+              selected && "shadow-[0_0_15px_rgba(59,130,246,0.4)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] ring-2 ring-blue-500/30 animate-pulse",
               className
             )}
           >

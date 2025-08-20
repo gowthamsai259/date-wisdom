@@ -4,12 +4,14 @@ export interface FamousPerson {
   year: number;
   description: string;
   type: 'birth' | 'death';
+  imageUrl?: string;
 }
 
 export interface HistoricalEvent {
   year: number;
   event: string;
   description: string;
+  imageUrl?: string;
 }
 
 export interface ZodiacSign {
@@ -129,7 +131,7 @@ const horoscopeData: Record<string, Omit<ZodiacSign, 'sign'>> = {
 };
 
 // Get horoscope for zodiac sign
-export const getHoroscope = async (date: Date): Promise<ZodiacSign> => {
+export const fetchDailyHoroscope = async (date: Date): Promise<ZodiacSign> => {
   await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
   
   const month = date.getMonth() + 1;
@@ -143,55 +145,145 @@ export const getHoroscope = async (date: Date): Promise<ZodiacSign> => {
 };
 
 // Get famous people born/died on this date
-export const getFamousPeople = async (date: Date): Promise<FamousPerson[]> => {
-  await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-  
+export const fetchFamousPeopleForDate = async (date: Date): Promise<FamousPerson[]> => {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   
-  // Mock data - in real app, you'd fetch from Wikipedia API or similar
-  const mockData: FamousPerson[] = [
-    { name: "Albert Einstein", year: 1879, description: "Theoretical physicist, developed theory of relativity", type: "birth" },
-    { name: "Leonardo da Vinci", year: 1452, description: "Renaissance artist and inventor", type: "birth" },
-    { name: "Marie Curie", year: 1867, description: "First woman to win Nobel Prize", type: "birth" },
-    { name: "William Shakespeare", year: 1564, description: "English playwright and poet", type: "birth" },
-    { name: "Nelson Mandela", year: 1918, description: "Anti-apartheid leader and former president", type: "birth" },
-    { name: "John F. Kennedy", year: 1963, description: "35th President of the United States", type: "death" },
-    { name: "Princess Diana", year: 1997, description: "Princess of Wales, humanitarian", type: "death" },
-    { name: "Martin Luther King Jr.", year: 1968, description: "Civil rights leader and activist", type: "death" },
-    { name: "Frida Kahlo", year: 1907, description: "Mexican artist known for self-portraits", type: "birth" },
-    { name: "Stephen Hawking", year: 1942, description: "Theoretical physicist and cosmologist", type: "birth" }
-  ];
+  // Format month and day with leading zeros
+  const monthStr = month.toString().padStart(2, '0');
+  const dayStr = day.toString().padStart(2, '0');
   
-  // Randomize based on date for variety
-  const seed = month * 31 + day;
-  const shuffled = mockData.sort(() => Math.sin(seed) - 0.5);
-  
-  return shuffled.slice(0, 10);
+  try {
+    // Fetch both births and deaths from Wikipedia API
+    const [birthsResponse, deathsResponse] = await Promise.all([
+      fetch(`https://en.wikipedia.org/api/rest_v1/feed/onthisday/births/${monthStr}/${dayStr}`),
+      fetch(`https://en.wikipedia.org/api/rest_v1/feed/onthisday/deaths/${monthStr}/${dayStr}`)
+    ]);
+
+    if (!birthsResponse.ok || !deathsResponse.ok) {
+      throw new Error('Failed to fetch data from Wikipedia API');
+    }
+
+    const birthsData = await birthsResponse.json();
+    const deathsData = await deathsResponse.json();
+
+    const famousPeople: FamousPerson[] = [];
+
+    // Process births (take all births)
+    if (birthsData.births && Array.isArray(birthsData.births)) {
+      birthsData.births.forEach((birth: any) => {
+        const name = birth.text.split(',')[0]; // Extract name before the comma
+        const description = birth.text.split(',')[1]?.trim() || 'Famous person';
+        
+        // Extract image from pages array
+        const pageWithImage = (birth.pages || []).find((p: any) => p?.originalimage?.source || p?.thumbnail?.source);
+        const imageUrl = pageWithImage?.originalimage?.source || pageWithImage?.thumbnail?.source;
+        
+        famousPeople.push({
+          name,
+          year: birth.year,
+          description,
+          type: 'birth' as const,
+          imageUrl
+        });
+      });
+    }
+
+    // Process deaths (take all deaths)
+    if (deathsData.deaths && Array.isArray(deathsData.deaths)) {
+      deathsData.deaths.forEach((death: any) => {
+        const name = death.text.split(',')[0]; // Extract name before the comma
+        const description = death.text.split(',')[1]?.trim() || 'Famous person';
+        
+        // Extract image from pages array
+        const pageWithImage = (death.pages || []).find((p: any) => p?.originalimage?.source || p?.thumbnail?.source);
+        const imageUrl = pageWithImage?.originalimage?.source || pageWithImage?.thumbnail?.source;
+        
+        famousPeople.push({
+          name,
+          year: death.year,
+          description,
+          type: 'death' as const,
+          imageUrl
+        });
+      });
+    }
+
+    return famousPeople;
+  } catch (error) {
+    console.error('Error fetching famous people:', error);
+    // Fallback to mock data if API fails
+    const mockData: FamousPerson[] = [
+      { name: "Albert Einstein", year: 1879, description: "Theoretical physicist, developed theory of relativity", type: "birth" },
+      { name: "Leonardo da Vinci", year: 1452, description: "Renaissance artist and inventor", type: "birth" },
+      { name: "Marie Curie", year: 1867, description: "First woman to win Nobel Prize", type: "birth" },
+      { name: "William Shakespeare", year: 1564, description: "English playwright and poet", type: "birth" },
+      { name: "Nelson Mandela", year: 1918, description: "Anti-apartheid leader and former president", type: "birth" },
+      { name: "John F. Kennedy", year: 1963, description: "35th President of the United States", type: "death" },
+      { name: "Princess Diana", year: 1997, description: "Princess of Wales, humanitarian", type: "death" },
+      { name: "Martin Luther King Jr.", year: 1968, description: "Civil rights leader and activist", type: "death" },
+      { name: "Frida Kahlo", year: 1907, description: "Mexican artist known for self-portraits", type: "birth" },
+      { name: "Stephen Hawking", year: 1942, description: "Theoretical physicist and cosmologist", type: "birth" }
+    ];
+    
+    // Randomize based on date for variety
+    const seed = month * 31 + day;
+    const shuffled = mockData.sort(() => Math.sin(seed) - 0.5);
+    
+    return shuffled.slice(0, 6); // Return 6 items (3 births + 3 deaths) to match API structure
+  }
 };
 
 // Get historical events for this date
-export const getHistoricalEvents = async (date: Date): Promise<HistoricalEvent[]> => {
-  await new Promise(resolve => setTimeout(resolve, 900)); // Simulate API delay
-  
+export const fetchHistoricalEventsForDate = async (date: Date): Promise<HistoricalEvent[]> => {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   
-  // Mock historical events - in real app, you'd fetch from historical APIs
-  const mockEvents: HistoricalEvent[] = [
-    { year: 1969, event: "Apollo 11 Moon Landing", description: "First humans landed on the moon" },
-    { year: 1989, event: "Fall of Berlin Wall", description: "Symbol of Cold War division comes down" },
-    { year: 1776, event: "Declaration of Independence", description: "American colonies declare independence" },
-    { year: 1945, event: "End of World War II", description: "Japan surrenders, ending WWII" },
-    { year: 1963, event: "March on Washington", description: "Historic civil rights demonstration" },
-    { year: 1955, event: "Rosa Parks Bus Boycott", description: "Catalyst for civil rights movement" },
-    { year: 1991, event: "World Wide Web Launch", description: "Internet becomes publicly available" },
-    { year: 2001, event: "September 11 Attacks", description: "Terrorist attacks in United States" }
-  ];
+  // Format month and day with leading zeros
+  const monthStr = month.toString().padStart(2, '0');
+  const dayStr = day.toString().padStart(2, '0');
   
-  // Randomize based on date
-  const seed = month * 31 + day;
-  const shuffled = mockEvents.sort(() => Math.sin(seed) - 0.5);
-  
-  return shuffled.slice(0, 5);
+  try {
+    // Fetch historical events from Wikipedia API
+    const response = await fetch(`https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${monthStr}/${dayStr}`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch events from Wikipedia API');
+    }
+
+    const data = await response.json();
+
+    if (data.events && Array.isArray(data.events)) {
+      // Return all events, not just top 5
+      return data.events.map((evt: any) => {
+        const pageWithImage = (evt.pages || []).find((p: any) => p?.originalimage?.source || p?.thumbnail?.source);
+        const imageUrl = pageWithImage?.originalimage?.source || pageWithImage?.thumbnail?.source;
+        const [titlePart, descPart] = (evt.text || '').split(' – ');
+        return {
+          year: evt.year,
+          event: titlePart || evt.text,
+          description: descPart || evt.text,
+          imageUrl
+        } as HistoricalEvent;
+      });
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Error fetching historical events:', error);
+    // Fallback to mock data if API fails
+    const mockEvents: HistoricalEvent[] = [
+      { year: 1969, event: "Apollo 11 Moon Landing", description: "First humans landed on the moon" },
+      { year: 1989, event: "Fall of Berlin Wall", description: "Symbol of Cold War division comes down" },
+      { year: 1776, event: "Declaration of Independence", description: "American colonies declare independence" },
+      { year: 1945, event: "End of World War II", description: "Japan surrenders, ending WWII" },
+      { year: 1963, event: "March on Washington", description: "Historic civil rights demonstration" }
+    ];
+    
+    // Randomize based on date
+    const seed = month * 31 + day;
+    const shuffled = mockEvents.sort(() => Math.sin(seed) - 0.5);
+    
+    return shuffled.slice(0, 5);
+  }
 };
