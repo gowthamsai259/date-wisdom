@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Calendar, Star, Users, History, Sparkles, ArrowLeft, X, ArrowUp } from "lucide-react";
+import { Calendar, Star, Users, History, Sparkles, ArrowLeft, X, ArrowUp, ExternalLink } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,6 +31,7 @@ export const BirthdayInsights = () => {
   const [loadingMoreEvents, setLoadingMoreEvents] = useState(false);
   const [visibleFamousPeople, setVisibleFamousPeople] = useState<number>(10);
   const [loadingMorePeople, setLoadingMorePeople] = useState(false);
+  const isMobile = useIsMobile();
 
   // Auto-load today's data on component mount
   useEffect(() => {
@@ -228,6 +230,18 @@ export const BirthdayInsights = () => {
                             {person.type === 'birth' ? 'Born' : 'Died'}
                           </Badge>
                           <span className="text-sm font-medium" data-id={`famous-person-year-${index}`}>{person.year}</span>
+                          {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
+                            <a
+                              href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors"
+                              data-id={`famous-person-wiki-link-${index}`}
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              <span className="text-xs">Wikipedia</span>
+                            </a>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -300,9 +314,23 @@ export const BirthdayInsights = () => {
                         <p className="text-muted-foreground mb-3" data-id={`historical-event-description-${index}`}>
                           {event.description}
                         </p>
-                        <Badge variant="outline" className="text-sm" data-id={`historical-event-year-${index}`}>
-                          {event.year}
-                        </Badge>
+                        <div className="flex items-center space-x-2" data-id={`historical-event-badges-${index}`}>
+                          <Badge variant="outline" className="text-sm" data-id={`historical-event-year-${index}`}>
+                            {event.year}
+                          </Badge>
+                          {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
+                            <a
+                              href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors"
+                              data-id={`historical-event-wiki-link-${index}`}
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              <span className="text-xs">Wikipedia</span>
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -469,12 +497,24 @@ export const BirthdayInsights = () => {
                                   data-id={`famous-person-preview-image-${index}`}
                                 />
                               ) : null}
-                              <div data-id={`famous-person-preview-info-${index}`}>
-                                <h4 className="font-medium text-sm" data-id={`famous-person-preview-name-${index}`}>{person.name}</h4>
-                                <p className="text-xs text-muted-foreground mt-1" data-id={`famous-person-preview-description-${index}`}>
-                                  {person.description}
-                                </p>
-                              </div>
+                               <div data-id={`famous-person-preview-info-${index}`}>
+                                 <h4 className="font-medium text-sm" data-id={`famous-person-preview-name-${index}`}>{person.name}</h4>
+                                 <p className="text-xs text-muted-foreground mt-1" data-id={`famous-person-preview-description-${index}`}>
+                                   {person.description}
+                                 </p>
+                                 {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
+                                   <a
+                                     href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                                     target="_blank"
+                                     rel="noopener noreferrer"
+                                     className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors mt-1"
+                                     data-id={`famous-person-preview-wiki-link-${index}`}
+                                   >
+                                     <ExternalLink className="h-2.5 w-2.5" />
+                                     <span className="text-xs">Wikipedia</span>
+                                   </a>
+                                 )}
+                               </div>
                             </div>
                             <Badge 
                               variant={person.type === 'birth' ? 'default' : 'secondary'}
@@ -537,12 +577,24 @@ export const BirthdayInsights = () => {
                                   data-id={`historical-event-preview-image-${index}`}
                                 />
                               ) : null}
-                              <div data-id={`historical-event-preview-info-${index}`}>
-                                <h4 className="font-medium text-sm" data-id={`historical-event-preview-title-${index}`}>{event.event}</h4>
-                                <p className="text-xs text-muted-foreground mt-1" data-id={`historical-event-preview-description-${index}`}>
-                                  {event.description}
-                                </p>
-                              </div>
+                               <div data-id={`historical-event-preview-info-${index}`}>
+                                 <h4 className="font-medium text-sm" data-id={`historical-event-preview-title-${index}`}>{event.event}</h4>
+                                 <p className="text-xs text-muted-foreground mt-1" data-id={`historical-event-preview-description-${index}`}>
+                                   {event.description}
+                                 </p>
+                                 {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
+                                   <a
+                                     href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                                     target="_blank"
+                                     rel="noopener noreferrer"
+                                     className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors mt-1"
+                                     data-id={`historical-event-preview-wiki-link-${index}`}
+                                   >
+                                     <ExternalLink className="h-2.5 w-2.5" />
+                                     <span className="text-xs">Wikipedia</span>
+                                   </a>
+                                 )}
+                               </div>
                             </div>
                             <Badge variant="outline" className="text-xs ml-2" data-id={`historical-event-preview-year-${index}`}>
                               {event.year}

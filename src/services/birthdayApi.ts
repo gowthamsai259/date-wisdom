@@ -5,6 +5,10 @@ export interface FamousPerson {
   description: string;
   type: 'birth' | 'death';
   imageUrl?: string;
+  wikipediaUrl?: {
+    desktop: string;
+    mobile: string;
+  };
 }
 
 export interface HistoricalEvent {
@@ -12,6 +16,10 @@ export interface HistoricalEvent {
   event: string;
   description: string;
   imageUrl?: string;
+  wikipediaUrl?: {
+    desktop: string;
+    mobile: string;
+  };
 }
 
 export interface ZodiacSign {
@@ -175,16 +183,24 @@ export const fetchFamousPeopleForDate = async (date: Date): Promise<FamousPerson
         const name = birth.text.split(',')[0]; // Extract name before the comma
         const description = birth.text.split(',')[1]?.trim() || 'Famous person';
         
-        // Extract image from pages array
+        // Extract image and Wikipedia URLs from pages array
         const pageWithImage = (birth.pages || []).find((p: any) => p?.originalimage?.source || p?.thumbnail?.source);
         const imageUrl = pageWithImage?.originalimage?.source || pageWithImage?.thumbnail?.source;
+        
+        // Extract Wikipedia URLs
+        const pageWithUrl = (birth.pages || [])[0]; // Use first page for URL
+        const wikipediaUrl = pageWithUrl?.content_urls ? {
+          desktop: pageWithUrl.content_urls.desktop?.page || '',
+          mobile: pageWithUrl.content_urls.mobile?.page || ''
+        } : undefined;
         
         famousPeople.push({
           name,
           year: birth.year,
           description,
           type: 'birth' as const,
-          imageUrl
+          imageUrl,
+          wikipediaUrl
         });
       });
     }
@@ -195,16 +211,24 @@ export const fetchFamousPeopleForDate = async (date: Date): Promise<FamousPerson
         const name = death.text.split(',')[0]; // Extract name before the comma
         const description = death.text.split(',')[1]?.trim() || 'Famous person';
         
-        // Extract image from pages array
+        // Extract image and Wikipedia URLs from pages array
         const pageWithImage = (death.pages || []).find((p: any) => p?.originalimage?.source || p?.thumbnail?.source);
         const imageUrl = pageWithImage?.originalimage?.source || pageWithImage?.thumbnail?.source;
+        
+        // Extract Wikipedia URLs
+        const pageWithUrl = (death.pages || [])[0]; // Use first page for URL
+        const wikipediaUrl = pageWithUrl?.content_urls ? {
+          desktop: pageWithUrl.content_urls.desktop?.page || '',
+          mobile: pageWithUrl.content_urls.mobile?.page || ''
+        } : undefined;
         
         famousPeople.push({
           name,
           year: death.year,
           description,
           type: 'death' as const,
-          imageUrl
+          imageUrl,
+          wikipediaUrl
         });
       });
     }
@@ -258,12 +282,21 @@ export const fetchHistoricalEventsForDate = async (date: Date): Promise<Historic
       return data.events.map((evt: any) => {
         const pageWithImage = (evt.pages || []).find((p: any) => p?.originalimage?.source || p?.thumbnail?.source);
         const imageUrl = pageWithImage?.originalimage?.source || pageWithImage?.thumbnail?.source;
+        
+        // Extract Wikipedia URLs
+        const pageWithUrl = (evt.pages || [])[0]; // Use first page for URL
+        const wikipediaUrl = pageWithUrl?.content_urls ? {
+          desktop: pageWithUrl.content_urls.desktop?.page || '',
+          mobile: pageWithUrl.content_urls.mobile?.page || ''
+        } : undefined;
+        
         const [titlePart, descPart] = (evt.text || '').split(' – ');
         return {
           year: evt.year,
           event: titlePart || evt.text,
           description: descPart || evt.text,
-          imageUrl
+          imageUrl,
+          wikipediaUrl
         } as HistoricalEvent;
       });
     }
