@@ -345,7 +345,7 @@ export const BirthdayInsights = () => {
             <CardHeader className="text-center" data-id="date-selection-header">
               <CardTitle className="flex items-center justify-center space-x-2" data-id="date-selection-title">
                 <Calendar className="h-5 w-5" />
-                <span>Today's Insights</span>
+                <span>Birthday's Insights</span>
               </CardTitle>
               <CardDescription data-id="date-selection-description">
                 {format(selectedDate, "MMMM do, yyyy")} • Change date to explore other days
