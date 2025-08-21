@@ -217,7 +217,32 @@ export const BirthdayInsights = () => {
                         />
                       )}
                       <div className="flex-1" data-id={`famous-person-info-${index}`}>
-                        <h3 className="text-xl font-semibold mb-2" data-id={`famous-person-name-${index}`}>{person.name}</h3>
+                        <div className="flex items-center space-x-2 mb-2">
+                          {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) ? (
+                            <a
+                              href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xl font-semibold text-primary hover:text-primary/80 transition-colors"
+                              data-id={`famous-person-name-${index}`}
+                            >
+                              {person.name}
+                            </a>
+                          ) : (
+                            <h3 className="text-xl font-semibold text-primary" data-id={`famous-person-name-${index}`}>{person.name}</h3>
+                          )}
+                          {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
+                            <a
+                              href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:text-primary/80 transition-colors"
+                              data-id={`famous-person-wiki-button-${index}`}
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          )}
+                        </div>
                         <p className="text-muted-foreground mb-3" data-id={`famous-person-description-${index}`}>
                           {person.description}
                         </p>
@@ -230,18 +255,6 @@ export const BirthdayInsights = () => {
                             {person.type === 'birth' ? 'Born' : 'Died'}
                           </Badge>
                           <span className="text-sm font-medium" data-id={`famous-person-year-${index}`}>{person.year}</span>
-                          {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
-                            <a
-                              href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors"
-                              data-id={`famous-person-wiki-link-${index}`}
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                              <span className="text-xs">Wikipedia</span>
-                            </a>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -310,7 +323,32 @@ export const BirthdayInsights = () => {
                         />
                       )}
                       <div className="flex-1" data-id={`historical-event-info-${index}`}>
-                        <h3 className="text-xl font-semibold mb-2" data-id={`historical-event-title-${index}`}>{event.event}</h3>
+                        <div className="flex items-center space-x-2 mb-2">
+                          {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) ? (
+                            <a
+                              href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xl font-semibold text-primary hover:text-primary/80 transition-colors"
+                              data-id={`historical-event-title-${index}`}
+                            >
+                              {event.event}
+                            </a>
+                          ) : (
+                            <h3 className="text-xl font-semibold text-primary" data-id={`historical-event-title-${index}`}>{event.event}</h3>
+                          )}
+                          {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
+                            <a
+                              href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:text-primary/80 transition-colors"
+                              data-id={`historical-event-wiki-button-${index}`}
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          )}
+                        </div>
                         <p className="text-muted-foreground mb-3" data-id={`historical-event-description-${index}`}>
                           {event.description}
                         </p>
@@ -318,18 +356,6 @@ export const BirthdayInsights = () => {
                           <Badge variant="outline" className="text-sm" data-id={`historical-event-year-${index}`}>
                             {event.year}
                           </Badge>
-                          {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
-                            <a
-                              href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors"
-                              data-id={`historical-event-wiki-link-${index}`}
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                              <span className="text-xs">Wikipedia</span>
-                            </a>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -498,22 +524,35 @@ export const BirthdayInsights = () => {
                                 />
                               ) : null}
                                <div data-id={`famous-person-preview-info-${index}`}>
-                                 <h4 className="font-medium text-sm" data-id={`famous-person-preview-name-${index}`}>{person.name}</h4>
+                                 <div className="flex items-center space-x-1">
+                                   {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) ? (
+                                     <a
+                                       href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       className="font-medium text-sm text-primary hover:text-primary/80 transition-colors"
+                                       data-id={`famous-person-preview-name-${index}`}
+                                     >
+                                       {person.name}
+                                     </a>
+                                   ) : (
+                                     <h4 className="font-medium text-sm text-primary" data-id={`famous-person-preview-name-${index}`}>{person.name}</h4>
+                                   )}
+                                   {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
+                                     <a
+                                       href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       className="text-primary hover:text-primary/80 transition-colors"
+                                       data-id={`famous-person-preview-wiki-button-${index}`}
+                                     >
+                                       <ExternalLink className="h-3 w-3" />
+                                     </a>
+                                   )}
+                                 </div>
                                  <p className="text-xs text-muted-foreground mt-1" data-id={`famous-person-preview-description-${index}`}>
                                    {person.description}
                                  </p>
-                                 {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
-                                   <a
-                                     href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
-                                     target="_blank"
-                                     rel="noopener noreferrer"
-                                     className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors mt-1"
-                                     data-id={`famous-person-preview-wiki-link-${index}`}
-                                   >
-                                     <ExternalLink className="h-2.5 w-2.5" />
-                                     <span className="text-xs">Wikipedia</span>
-                                   </a>
-                                 )}
                                </div>
                             </div>
                             <Badge 
@@ -578,22 +617,35 @@ export const BirthdayInsights = () => {
                                 />
                               ) : null}
                                <div data-id={`historical-event-preview-info-${index}`}>
-                                 <h4 className="font-medium text-sm" data-id={`historical-event-preview-title-${index}`}>{event.event}</h4>
+                                 <div className="flex items-center space-x-1">
+                                   {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) ? (
+                                     <a
+                                       href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       className="font-medium text-sm text-primary hover:text-primary/80 transition-colors"
+                                       data-id={`historical-event-preview-title-${index}`}
+                                     >
+                                       {event.event}
+                                     </a>
+                                   ) : (
+                                     <h4 className="font-medium text-sm text-primary" data-id={`historical-event-preview-title-${index}`}>{event.event}</h4>
+                                   )}
+                                   {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
+                                     <a
+                                       href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       className="text-primary hover:text-primary/80 transition-colors"
+                                       data-id={`historical-event-preview-wiki-button-${index}`}
+                                     >
+                                       <ExternalLink className="h-3 w-3" />
+                                     </a>
+                                   )}
+                                 </div>
                                  <p className="text-xs text-muted-foreground mt-1" data-id={`historical-event-preview-description-${index}`}>
                                    {event.description}
                                  </p>
-                                 {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
-                                   <a
-                                     href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
-                                     target="_blank"
-                                     rel="noopener noreferrer"
-                                     className="inline-flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors mt-1"
-                                     data-id={`historical-event-preview-wiki-link-${index}`}
-                                   >
-                                     <ExternalLink className="h-2.5 w-2.5" />
-                                     <span className="text-xs">Wikipedia</span>
-                                   </a>
-                                 )}
                                </div>
                             </div>
                             <Badge variant="outline" className="text-xs ml-2" data-id={`historical-event-preview-year-${index}`}>
