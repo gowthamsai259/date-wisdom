@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePicker } from "@/components/DatePicker";
 import { AgeCalculationSection } from "@/components/AgeCalculationSection";
 import { BirthdayCardGenerator } from "@/components/BirthdayCardGenerator";
@@ -113,7 +114,9 @@ export const BirthdayInsights = () => {
     }, 500);
   };
 
-  const handleDateSelect = async (date: Date) => {
+  const handleDateSelect = async (date: Date | undefined) => {
+    if (!date) return;
+    
     setSelectedDate(date);
     setLoading(true);
     
@@ -397,316 +400,263 @@ export const BirthdayInsights = () => {
       <main className="container mx-auto px-4 py-8" data-id="main-content">
         {/* Date Selection */}
         <div className="max-w-md mx-auto mb-8" data-id="date-selection-section">
-          <Card className="shadow-card" data-id="date-selection-card">
-            <CardHeader className="text-center" data-id="date-selection-header">
-              <CardTitle className="flex items-center justify-center space-x-2" data-id="date-selection-title">
-                <Calendar className="h-5 w-5" />
-                <span>Birthday's Insights</span>
+          <Card className="shadow-card animate-in slide-in-from-top duration-500" data-id="date-picker-card">
+            <CardHeader className="text-center" data-id="date-picker-header">
+              <CardTitle className="flex items-center justify-center space-x-2" data-id="date-picker-title">
+                <Calendar className="h-5 w-5 text-primary" />
+                <span>Select Your Birthday</span>
               </CardTitle>
-              <CardDescription data-id="date-selection-description">
-                {format(selectedDate, "MMMM do, yyyy")} • Change date to explore other days
+              <CardDescription data-id="date-picker-description">
+                Discover fascinating insights about your special day
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex justify-center" data-id="date-selection-content">
-              <DatePicker
-                selected={selectedDate}
-                onSelect={(date) => date && handleDateSelect(date)}
-                placeholder="Pick a different date"
-                data-id="date-picker"
+            <CardContent data-id="date-picker-content">
+              <DatePicker 
+                selected={selectedDate} 
+                onSelect={handleDateSelect}
+                data-id="date-picker-component"
               />
             </CardContent>
           </Card>
         </div>
 
-        {/* Age Calculation Section */}
-        <AgeCalculationSection birthDate={selectedDate} />
+        {/* Tabs Navigation */}
+        <Tabs defaultValue="life-analysis" className="max-w-6xl mx-auto">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="life-analysis">Life Analysis</TabsTrigger>
+            <TabsTrigger value="card-generator">Birthday Card</TabsTrigger>
+            <TabsTrigger value="significance">Significance</TabsTrigger>
+          </TabsList>
 
-        {/* Birthday Card Generator */}
-        <BirthdayCardGenerator birthDate={selectedDate} />
-
-        {/* Ad Space */}
-        <div className="max-w-4xl mx-auto mb-8" data-id="ad-space-top">
-          <Card className="bg-muted/50 border-dashed" data-id="ad-card-top">
-            <CardContent className="py-8" data-id="ad-content-top">
-              <div className="text-center text-muted-foreground" data-id="ad-text-top">
-                <div className="text-sm font-medium mb-1">Advertisement Space</div>
-                <div className="text-xs">Google Ads can be placed here</div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Results */}
-        <div className="max-w-6xl mx-auto space-y-8" data-id="results-section">
-          {/* Selected Date Display */}
-          <div className="text-center" data-id="date-display-section">
-            <h2 className="text-3xl font-bold mb-2" data-id="current-date-title">
-              {format(selectedDate, "MMMM do, yyyy")}
-            </h2>
-            <p className="text-muted-foreground" data-id="date-subtitle">
-              Exploring the significance of this day
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-6" data-id="insights-grid">
+          {/* Life Analysis Tab */}
+          <TabsContent value="life-analysis" className="space-y-8">
+            {selectedDate && <AgeCalculationSection birthDate={selectedDate} />}
+            
             {/* Horoscope Section */}
-            <Card className="shadow-card" data-id="horoscope-card">
-              <CardHeader data-id="horoscope-header">
-                <CardTitle className="flex items-center space-x-2" data-id="horoscope-title">
-                  <Star className="h-5 w-5 text-primary" />
-                  <span>Your Horoscope</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4" data-id="horoscope-content">
-                {loading ? (
-                  <div className="space-y-3" data-id="horoscope-loading">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-20 w-full" />
-                  </div>
-                ) : birthdayData.horoscope ? (
-                  <div className="space-y-4" data-id="horoscope-data">
-                    <div className="text-center" data-id="horoscope-sign-section">
-                      <Badge variant="secondary" className="text-lg px-4 py-2" data-id="horoscope-sign">
-                        {birthdayData.horoscope.sign}
-                      </Badge>
-                    </div>
-                    <p className="text-sm leading-relaxed" data-id="horoscope-text">
-                      {birthdayData.horoscope.horoscope}
-                    </p>
-                    <div className="space-y-2" data-id="horoscope-details">
-                      <div data-id="horoscope-traits-section">
-                        <span className="font-medium text-xs">Key Traits:</span>
-                        <div className="flex flex-wrap gap-1 mt-1" data-id="horoscope-traits-list">
-                          {birthdayData.horoscope.traits.map((trait, index) => (
-                            <Badge key={index} variant="outline" className="text-xs" data-id={`horoscope-trait-${index}`}>
-                              {trait}
-                            </Badge>
-                          ))}
+            {!loading && birthdayData.horoscope && (
+              <div className="animate-in slide-in-from-bottom duration-500 delay-300">
+                <Card className="shadow-card">
+                  <CardHeader className="text-center">
+                    <CardTitle className="flex items-center justify-center space-x-2">
+                      <Star className="h-5 w-5 text-primary" />
+                      <span>Your Zodiac Sign</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center space-y-4">
+                      <div className="text-6xl">⭐</div>
+                      <h3 className="text-2xl font-bold text-primary">{birthdayData.horoscope.sign}</h3>
+                      <p className="text-muted-foreground max-w-2xl mx-auto">
+                        {birthdayData.horoscope.horoscope}
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <div className="p-4 rounded-lg bg-muted/50">
+                          <h4 className="font-semibold text-primary mb-2">Traits</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {birthdayData.horoscope.traits.map((trait, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                {trait}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="p-4 rounded-lg bg-muted/50">
+                          <h4 className="font-semibold text-primary mb-2">Lucky Color</h4>
+                          <Badge variant="outline" className="text-xs">
+                            {birthdayData.horoscope.luckyColor}
+                          </Badge>
                         </div>
                       </div>
-                      <div className="text-xs" data-id="horoscope-lucky-color">
-                        <span className="font-medium">Lucky Color:</span> {birthdayData.horoscope.luckyColor}
-                      </div>
-                      <div className="text-xs" data-id="horoscope-lucky-numbers">
-                        <span className="font-medium">Lucky Numbers:</span> {birthdayData.horoscope.luckyNumbers.join(', ')}
-                      </div>
                     </div>
-                  </div>
-                ) : null}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </TabsContent>
 
+          {/* Birthday Card Generator Tab */}
+          <TabsContent value="card-generator">
+            <BirthdayCardGenerator birthDate={selectedDate} />
+          </TabsContent>
+
+          {/* Significance Tab */}
+          <TabsContent value="significance" className="space-y-8">
             {/* Famous People Section */}
-            <Card className="shadow-card" data-id="famous-people-card">
-              <CardHeader data-id="famous-people-card-header">
-                <CardTitle className="flex items-center space-x-2" data-id="famous-people-card-title">
-                  <Users className="h-5 w-5 text-primary" />
-                  <span>Famous People</span>
-                </CardTitle>
-                <CardDescription data-id="famous-people-card-description">Born or died on this day</CardDescription>
-              </CardHeader>
-              <CardContent data-id="famous-people-card-content">
-                {loading ? (
-                  <div className="space-y-3" data-id="famous-people-loading">
-                    {[...Array(5)].map((_, i) => (
-                      <div key={i} className="space-y-2" data-id={`famous-people-skeleton-${i}`}>
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-3 w-full" />
+            {!loading && birthdayData.famousPeople.length > 0 && (
+              <div className="animate-in slide-in-from-bottom duration-500 delay-500">
+                <Card className="shadow-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Users className="h-5 w-5 text-primary" />
+                        <span>Famous People</span>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-3" data-id="famous-people-data">
-                    <div className="max-h-80 overflow-y-auto space-y-3" data-id="famous-people-list-preview">
-                      {birthdayData.famousPeople.slice(0, 5).map((person, index) => (
-                        <div key={index} className="border-b border-border/50 pb-2 last:border-0" data-id={`famous-person-preview-${index}`}>
-                          <div className="flex items-start justify-between" data-id={`famous-person-preview-layout-${index}`}>
-                            <div className="flex-1 flex items-start gap-3" data-id={`famous-person-preview-content-${index}`}>
-                              {person.imageUrl ? (
+                      {birthdayData.famousPeople.length > 3 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewModeChange('famous-people')}
+                        >
+                          View All ({birthdayData.famousPeople.length})
+                        </Button>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {birthdayData.famousPeople.slice(0, 3).map((person, index) => (
+                        <Card key={index} className="border-muted hover:border-primary/20 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="space-y-3">
+                              {person.imageUrl && (
                                 <img
                                   src={person.imageUrl}
                                   alt={person.name}
-                                  className="w-12 h-12 rounded object-cover flex-shrink-0"
-                                  data-id={`famous-person-preview-image-${index}`}
+                                  className="w-full h-32 object-cover rounded-lg"
                                 />
-                              ) : null}
-                               <div data-id={`famous-person-preview-info-${index}`}>
-                                 <div className="flex items-center space-x-1">
-                                   {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) ? (
-                                     <a
-                                       href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="font-medium text-sm text-primary hover:text-primary/80 transition-colors"
-                                       data-id={`famous-person-preview-name-${index}`}
-                                     >
-                                       {person.name}
-                                     </a>
-                                   ) : (
-                                     <h4 className="font-medium text-sm text-primary" data-id={`famous-person-preview-name-${index}`}>{person.name}</h4>
-                                   )}
-                                   {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
-                                     <a
-                                       href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="text-primary hover:text-primary/80 transition-colors"
-                                       data-id={`famous-person-preview-wiki-button-${index}`}
-                                     >
-                                       <ExternalLink className="h-3 w-3" />
-                                     </a>
-                                   )}
-                                 </div>
-                                 <p className="text-xs text-muted-foreground mt-1" data-id={`famous-person-preview-description-${index}`}>
-                                   {person.description}
-                                 </p>
-                               </div>
+                              )}
+                              <div>
+                                <div className="flex items-center space-x-2 mb-1">
+                                  {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) ? (
+                                    <a
+                                      href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-semibold text-primary hover:text-primary/80 transition-colors"
+                                    >
+                                      {person.name}
+                                    </a>
+                                  ) : (
+                                    <h3 className="font-semibold text-primary">{person.name}</h3>
+                                  )}
+                                  {person.wikipediaUrl && (person.wikipediaUrl.desktop || person.wikipediaUrl.mobile) && (
+                                    <a
+                                      href={isMobile ? person.wikipediaUrl.mobile : person.wikipediaUrl.desktop}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-primary hover:text-primary/80 transition-colors"
+                                    >
+                                      <ExternalLink className="h-3 w-3" />
+                                    </a>
+                                  )}
+                                </div>
+                                <p className="text-sm text-muted-foreground line-clamp-2">
+                                  {person.description}
+                                </p>
+                                <div className="flex items-center gap-2 mt-2">
+                                  <Badge 
+                                    variant={person.type === 'birth' ? 'default' : 'secondary'}
+                                    className="text-xs"
+                                  >
+                                    {person.type === 'birth' ? 'Born' : 'Died'}
+                                  </Badge>
+                                  <span className="text-xs text-muted-foreground">{person.year}</span>
+                                </div>
+                              </div>
                             </div>
-                            <Badge 
-                              variant={person.type === 'birth' ? 'default' : 'secondary'}
-                              className="text-xs ml-2"
-                              data-id={`famous-person-preview-badge-${index}`}
-                            >
-                              {person.type === 'birth' ? 'Born' : 'Died'} {person.year}
-                            </Badge>
-                          </div>
-                        </div>
+                          </CardContent>
+                        </Card>
                       ))}
                     </div>
-                    {birthdayData.famousPeople.length > 5 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full mt-3"
-                        onClick={() => handleViewModeChange('famous-people')}
-                        data-id="famous-people-view-more-button"
-                      >
-                        View More...
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
             {/* Historical Events Section */}
-            <Card className="shadow-card" data-id="historical-events-card">
-              <CardHeader data-id="historical-events-card-header">
-                <CardTitle className="flex items-center space-x-2" data-id="historical-events-card-title">
-                  <History className="h-5 w-5 text-primary" />
-                  <span>Historical Events</span>
-                </CardTitle>
-                <CardDescription data-id="historical-events-card-description">What happened on this day</CardDescription>
-              </CardHeader>
-              <CardContent data-id="historical-events-card-content">
-                {loading ? (
-                  <div className="space-y-3" data-id="historical-events-loading">
-                    {[...Array(4)].map((_, i) => (
-                      <div key={i} className="space-y-2" data-id={`historical-events-skeleton-${i}`}>
-                        <Skeleton className="h-4 w-2/3" />
-                        <Skeleton className="h-3 w-full" />
+            {!loading && birthdayData.historicalEvents.length > 0 && (
+              <div className="animate-in slide-in-from-bottom duration-500 delay-700">
+                <Card className="shadow-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <History className="h-5 w-5 text-primary" />
+                        <span>Historical Events</span>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-3" data-id="historical-events-data">
-                    <div className="max-h-80 overflow-y-auto space-y-3" data-id="historical-events-list-preview">
-                      {birthdayData.historicalEvents.slice(0, 5).map((event, index) => (
-                        <div key={index} className="border-b border-border/50 pb-2 last:border-0" data-id={`historical-event-preview-${index}`}>
-                          <div className="flex items-start justify-between" data-id={`historical-event-preview-layout-${index}`}>
-                            <div className="flex-1 flex items-start gap-3" data-id={`historical-event-preview-content-${index}`}>
-                              {event.imageUrl ? (
+                      {birthdayData.historicalEvents.length > 3 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewModeChange('historical-events')}
+                        >
+                          View All ({birthdayData.historicalEvents.length})
+                        </Button>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {birthdayData.historicalEvents.slice(0, 3).map((event, index) => (
+                        <Card key={index} className="border-muted hover:border-primary/20 transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex gap-4">
+                              {event.imageUrl && (
                                 <img
                                   src={event.imageUrl}
                                   alt={event.event}
-                                  className="w-12 h-12 rounded object-cover flex-shrink-0"
-                                  data-id={`historical-event-preview-image-${index}`}
+                                  className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
                                 />
-                              ) : null}
-                               <div data-id={`historical-event-preview-info-${index}`}>
-                                 <div className="flex items-center space-x-1">
-                                   {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) ? (
-                                     <a
-                                       href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="font-medium text-sm text-primary hover:text-primary/80 transition-colors"
-                                       data-id={`historical-event-preview-title-${index}`}
-                                     >
-                                       {event.event}
-                                     </a>
-                                   ) : (
-                                     <h4 className="font-medium text-sm text-primary" data-id={`historical-event-preview-title-${index}`}>{event.event}</h4>
-                                   )}
-                                   {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
-                                     <a
-                                       href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="text-primary hover:text-primary/80 transition-colors"
-                                       data-id={`historical-event-preview-wiki-button-${index}`}
-                                     >
-                                       <ExternalLink className="h-3 w-3" />
-                                     </a>
-                                   )}
-                                 </div>
-                                 <p className="text-xs text-muted-foreground mt-1" data-id={`historical-event-preview-description-${index}`}>
-                                   {event.description}
-                                 </p>
-                               </div>
+                              )}
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2 mb-1">
+                                  {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) ? (
+                                    <a
+                                      href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-semibold text-primary hover:text-primary/80 transition-colors line-clamp-2"
+                                    >
+                                      {event.event}
+                                    </a>
+                                  ) : (
+                                    <h3 className="font-semibold text-primary line-clamp-2">{event.event}</h3>
+                                  )}
+                                  {event.wikipediaUrl && (event.wikipediaUrl.desktop || event.wikipediaUrl.mobile) && (
+                                    <a
+                                      href={isMobile ? event.wikipediaUrl.mobile : event.wikipediaUrl.desktop}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-primary hover:text-primary/80 transition-colors flex-shrink-0"
+                                    >
+                                      <ExternalLink className="h-3 w-3" />
+                                    </a>
+                                  )}
+                                </div>
+                                <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                                  {event.description}
+                                </p>
+                                <Badge variant="outline" className="text-xs">
+                                  {event.year}
+                                </Badge>
+                              </div>
                             </div>
-                            <Badge variant="outline" className="text-xs ml-2" data-id={`historical-event-preview-year-${index}`}>
-                              {event.year}
-                            </Badge>
-                          </div>
-                        </div>
+                          </CardContent>
+                        </Card>
                       ))}
                     </div>
-                    {birthdayData.historicalEvents.length > 5 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full mt-3"
-                        onClick={() => handleViewModeChange('historical-events')}
-                        data-id="historical-events-view-more-button"
-                      >
-                        View More...
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Bottom Ad Space */}
-          <Card className="bg-muted/50 border-dashed" data-id="ad-card-bottom">
-            <CardContent className="py-8" data-id="ad-content-bottom">
-              <div className="text-center text-muted-foreground" data-id="ad-text-bottom">
-                <div className="text-sm font-medium mb-1">Advertisement Space</div>
-                <div className="text-xs">Google Ads Banner - 728x90</div>
+                  </CardContent>
+                </Card>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            )}
+          </TabsContent>
+        </Tabs>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-6">
+                  <Skeleton className="h-4 w-3/4 mb-4" />
+                  <Skeleton className="h-20 w-full mb-4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </main>
       {showBackToTop && <BackToTopButton />}
-
-      {/* Footer */}
-      <footer className="bg-secondary/50 border-t mt-16" data-id="main-footer">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center" data-id="footer-content">
-            <div className="flex items-center justify-center space-x-2 mb-4" data-id="footer-header">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <span className="font-semibold" data-id="footer-title">Birthday Insights</span>
-            </div>
-            <p className="text-sm text-muted-foreground" data-id="footer-description">
-              Discover the magic of your special day
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
