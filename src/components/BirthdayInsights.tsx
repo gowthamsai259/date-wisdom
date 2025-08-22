@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DatePicker } from "@/components/DatePicker";
+import { AgeCalculationSection } from "@/components/AgeCalculationSection";
+import { BirthdayCardGenerator } from "@/components/BirthdayCardGenerator";
 import { fetchDailyHoroscope, fetchFamousPeopleForDate, fetchHistoricalEventsForDate, type FamousPerson, type HistoricalEvent, type ZodiacSign } from "@/services/birthdayApi";
 
 interface BirthdayData {
@@ -415,6 +417,12 @@ export const BirthdayInsights = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Age Calculation Section */}
+        <AgeCalculationSection birthDate={selectedDate} />
+
+        {/* Birthday Card Generator */}
+        <BirthdayCardGenerator birthDate={selectedDate} />
 
         {/* Ad Space */}
         <div className="max-w-4xl mx-auto mb-8" data-id="ad-space-top">
