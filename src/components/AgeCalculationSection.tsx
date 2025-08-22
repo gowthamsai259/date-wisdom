@@ -72,33 +72,43 @@ export const AgeCalculationSection = ({ birthDate }: AgeCalculationSectionProps)
 
           {/* Alternative Age Formats */}
           <div className="space-y-3" data-id="alternative-formats">
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-id="total-months-row">
-              <div className="flex items-center space-x-2" data-id="total-months-label">
-                <Calendar className="h-4 w-4 text-primary" />
-                <span className="font-medium">Total Months Lived:</span>
-              </div>
-              <Badge variant="secondary" data-id="total-months-badge">
-                {ageData.totalMonths.toLocaleString()} months
-              </Badge>
-            </div>
-            
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-id="total-days-row">
               <div className="flex items-center space-x-2" data-id="total-days-label">
-                <Star className="h-4 w-4 text-primary" />
-                <span className="font-medium">Total Days Lived:</span>
+                <Calendar className="h-4 w-4 text-primary" />
+                <span className="font-medium">Total Days on Earth:</span>
               </div>
               <Badge variant="secondary" data-id="total-days-badge">
                 {ageData.totalDays.toLocaleString()} days
               </Badge>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg border border-primary/20" data-id="day-of-life-row">
-              <div className="flex items-center space-x-2" data-id="day-of-life-label">
-                <Trophy className="h-4 w-4 text-primary" />
-                <span className="font-medium text-primary">Today is your:</span>
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-id="total-hours-row">
+              <div className="flex items-center space-x-2" data-id="total-hours-label">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="font-medium">Total Hours on Earth:</span>
               </div>
-              <Badge variant="default" className="text-lg px-3 py-1" data-id="day-of-life-badge">
-                {formatDayOfLife(ageData.dayOfLife)} day
+              <Badge variant="secondary" data-id="total-hours-badge">
+                {Math.floor((Date.now() - birthDate.getTime()) / (1000 * 60 * 60)).toLocaleString()} hours
+              </Badge>
+            </div>
+
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-id="total-minutes-row">
+              <div className="flex items-center space-x-2" data-id="total-minutes-label">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="font-medium">Total Minutes on Earth:</span>
+              </div>
+              <Badge variant="secondary" data-id="total-minutes-badge">
+                {Math.floor((Date.now() - birthDate.getTime()) / (1000 * 60)).toLocaleString()} minutes
+              </Badge>
+            </div>
+
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-id="total-seconds-row">
+              <div className="flex items-center space-x-2" data-id="total-seconds-label">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="font-medium">Total Seconds on Earth:</span>
+              </div>
+              <Badge variant="secondary" data-id="total-seconds-badge">
+                {Math.floor((Date.now() - birthDate.getTime()) / 1000).toLocaleString()} seconds
               </Badge>
             </div>
           </div>

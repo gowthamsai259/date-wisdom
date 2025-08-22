@@ -410,7 +410,7 @@ export const BirthdayInsights = () => {
                 Discover fascinating insights about your special day
               </CardDescription>
             </CardHeader>
-            <CardContent data-id="date-picker-content">
+            <CardContent className="flex justify-center" data-id="date-picker-content">
               <DatePicker 
                 selected={selectedDate} 
                 onSelect={handleDateSelect}
@@ -509,11 +509,13 @@ export const BirthdayInsights = () => {
                           <CardContent className="p-4">
                             <div className="space-y-3">
                               {person.imageUrl && (
-                                <img
-                                  src={person.imageUrl}
-                                  alt={person.name}
-                                  className="w-full h-32 object-cover rounded-lg"
-                                />
+                                <div className="aspect-[16/9] relative overflow-hidden rounded-lg">
+                                  <img
+                                    src={person.imageUrl}
+                                    alt={person.name}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                  />
+                                </div>
                               )}
                               <div>
                                 <div className="flex items-center space-x-2 mb-1">
